@@ -1,6 +1,13 @@
+using DemoApplication_HOTEL.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddTransient<IGuestRepository, GuestRepository>();
+builder.Services.AddTransient<IRoomRepository,RoomRepository>();
+builder.Services.AddTransient<IScheduleRepository,ScheduleRepository>();
+builder.Services.AddTransient<IStaffRepository,StaffRepository>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
