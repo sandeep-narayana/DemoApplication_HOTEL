@@ -10,7 +10,7 @@ public enum Gender
 public record Guest
 {
     public int GuestID{get; set;}
-    public string name{get; set;}
+    public string Name{get; set;}
 
     public  long Mobile{get; set;}
     public string Email{get; set;}

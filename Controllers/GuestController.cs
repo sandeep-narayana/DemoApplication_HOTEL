@@ -25,7 +25,7 @@ public class GuestController : ControllerBase
     public async Task<ActionResult> CreateHandler([FromBody] CreateGuestDTO createGuestDTO)
     {
         var createGuest = new Guest{
-            name = createGuestDTO.name,
+            Name = createGuestDTO.Name,
             Mobile=createGuestDTO.Mobile,
             Email = createGuestDTO.Email,
             DateOfBirth = createGuestDTO.DateOfBirth,
@@ -43,6 +43,36 @@ public class GuestController : ControllerBase
     {
         var guests = await this._guestRepository.GetAll();
         return Ok(guests);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> delete([FromRoute] long id)
+    {
+        var res = await this._guestRepository.Delete(id);
+        return Ok(res);
+    }
+
+    [HttpGet("{GuestId}")]
+    public async Task<ActionResult> getHandler([FromRoute]long GuestId)
+    {
+        var res = await this._guestRepository.Get(GuestId);
+        if(res==null){
+            return NotFound();
+        }
+        return Ok(res);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> update([FromBody]Guest guest)
+    {
+        var existingGuest = this._guestRepository.Get(guest.GuestID);
+        if(existingGuest==null){
+            return NotFound();
+        }
+
+        var res = await this._guestRepository.Update(guest);
+        return Ok(res);
+
     }
 
 
