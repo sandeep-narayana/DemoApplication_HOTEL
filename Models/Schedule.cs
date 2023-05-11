@@ -1,3 +1,5 @@
+using DemoApplication_HOTEL.DTOs;
+
 namespace DemoApplication_HOTEL.Models;
 
 public record Schedule
@@ -12,5 +14,13 @@ public record Schedule
 
     public int GuestID{get; set;}
     public int RoomId{get; set;}
+
+    public ScheduleDto asScheduleDto => new ScheduleDto{
+        CheckIn = CheckIn,
+        CheckOut = CheckOut,
+        GuestCount =GuestCount,
+        Price = Price,
+        CreatedAt = CreatedAt
+    };
 
 }

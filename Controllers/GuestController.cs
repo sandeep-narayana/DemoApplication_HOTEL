@@ -14,15 +14,27 @@ public class GuestController : ControllerBase
 
     private readonly IGuestRepository _guestRepository;
 
-    public GuestController(ILogger<GuestController> logger,IGuestRepository guestRepository 
+    private readonly IScheduleRepository _scheduleRepository;
+
+    public GuestController(ILogger<GuestController> logger,IGuestRepository guestRepository,IScheduleRepository scheduleRepository
     )
     {
         _logger = logger;
         _guestRepository = guestRepository;
+        _scheduleRepository=scheduleRepository;
     }
 
+
+    [HttpGet]
+    public async Task<ActionResult> getAllHandler()
+    {
+        var guests = await this._guestRepository.GetAll();
+        return Ok(guests.Select(x=>x.asGuestDto));
+    }
+
+
     [HttpPost]
-    public async Task<ActionResult> CreateHandler([FromBody] CreateGuestDTO createGuestDTO)
+    public async Task<ActionResult> CreateHandler([FromBody] GuestDto createGuestDTO)
     {
         var createGuest = new Guest{
             Name = createGuestDTO.Name,
@@ -38,13 +50,7 @@ public class GuestController : ControllerBase
         return Ok(newGuest);
     }
 
-    [HttpGet]
-    public async Task<ActionResult> getAllHandler()
-    {
-        var guests = await this._guestRepository.GetAll();
-        return Ok(guests);
-    }
-
+    
     [HttpDelete("{id}")]
     public async Task<ActionResult> delete([FromRoute] long id)
     {
@@ -59,7 +65,11 @@ public class GuestController : ControllerBase
         if(res==null){
             return NotFound();
         }
-        return Ok(res);
+        var dto = res.asGuestDto;
+        dto.ScheduleDto = (await this._scheduleRepository.GetById(GuestId)).Select(x=>x.asScheduleDto).ToList();
+
+
+        return Ok(res.asGuestDto);
     }
 
     [HttpPut]
